@@ -46,7 +46,12 @@ namespace GothicSaveBackupper
 
         private void OnFileSystemWatcherEvent(object sender, FileSystemEventArgs e)
         {
-            string? directory = PathHelper.GetFullDirectoryPath(e.FullPath);
+            string? directory = e.FullPath;
+
+            if (!Directory.Exists(directory) && File.Exists(directory))
+            {
+                directory = Path.GetDirectoryName(directory);
+            }
 
             if (null == directory)
             {
@@ -60,9 +65,9 @@ namespace GothicSaveBackupper
                 return;
             }
 
-            string backupPath = PathHelper.NormalizePath(GetBackupDirectoryFullPath());
+            string backupDirectoryPath = GetBackupDirectoryPath();
 
-            if (directory.Equals(backupPath, StringComparison.OrdinalIgnoreCase))
+            if (directory.Equals(backupDirectoryPath, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -85,14 +90,16 @@ namespace GothicSaveBackupper
 
             ConsoleHelper.WriteLine($"Directory '{directory}' added to the queue.", ConsoleColor.Yellow);
 
-            await Task.Delay(15 * 1000); // Wait some time so game can finish saving...
+            // Wait some time so game can finish saving...
+            await Task.Delay(15 * 1000);
 
-            string backupDirectoryFullPath = GetBackupDirectoryFullPath();
+            string backupDirectoryPath = GetBackupDirectoryPath();
 
-            Directory.CreateDirectory(backupDirectoryFullPath);
+            // Ensure the backup directory exists...
+            Directory.CreateDirectory(backupDirectoryPath);
 
             string destinationArchiveFileName = Path.Combine(new string[] {
-                backupDirectoryFullPath,
+                backupDirectoryPath,
                 Path.GetFileName(directory) + $" {DateTime.Now:yyyy MM dd HH mm ss}.zip"
             });
 
@@ -109,7 +116,7 @@ namespace GothicSaveBackupper
             _backupQueue.RemoveDirectory(directory);
         }
 
-        private string GetBackupDirectoryFullPath()
+        private string GetBackupDirectoryPath()
         {
             string path = Path.Combine(new string[] {
                 _fileSystemWatcher.Path,
