@@ -20,4 +20,7 @@ C:\Steam\steamapps\common\TheChroniclesOfMyrtana\saves_thechroniclesofmyrtana
 ## How to use
 
 Run the executable and enjoy the game.  
+
+When application detects any changes in `*.SAV` files, save directory is added to the queue and it will be backed up (to `.zip` file) in 15 seconds (so the game can finish saving).
+
 Backed up saves will be stored in `backup/` folder, next to the executable.
