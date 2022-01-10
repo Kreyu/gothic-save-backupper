@@ -24,3 +24,9 @@ Run the executable and enjoy the game.
 When application detects any changes in `*.SAV` files, save directory is added to the queue and it will be backed up (to `.zip` file) in 15 seconds (so the game can finish saving).
 
 Backed up saves will be stored in `backup/` folder, next to the executable.
+
+## Building from source
+
+Please ensure you have [.NET Framework 6.0](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) installed. 
+
+Clone the repository, open the [solution file](./GothicSaveBackupper.sln) in Visual Studio 2022, and publish however you want to.
